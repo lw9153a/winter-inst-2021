@@ -17,8 +17,7 @@ state%>%
   mutate(perc_latino = perc_latino * 100)%>%
   mutate(perc_asian = perc_asian * 100)%>%
   mutate(perc_renew = perc_renew * 100)%>%
-  mutate(perc_ff = perc_ff * 100)%>%
-  mutate(perc_white = round(perc_white, digits = 0))->
+  mutate(perc_ff = perc_ff * 100)->
   state
 
 climate <- inner_join(state, yale, by = c("state" = "GeoName"))
