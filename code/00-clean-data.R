@@ -14,3 +14,7 @@ state%>%
   mutate(cp = ifelse(cp_2019 > 0, 1, 0)) ->
   state
 
+climate <- inner_join(state, yale, by = c("state" = "GeoName"))
+
+climate <- inner_join(climate, election, by = c("state" = "state"))
+
