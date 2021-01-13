@@ -23,6 +23,12 @@ ggplot(climate)+
 
 summary(climate$perc_renew)
 
+ggplot(climate)+
+  geom_histogram(aes(x = perc_ff))+
+  theme_bw()
+
+summary(climate$perc_ff)
 
 
 # Bivariate Analysis
+
