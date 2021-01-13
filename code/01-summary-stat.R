@@ -2,7 +2,7 @@ library(here)
 library(tidyverse)
 library(PerformanceAnalytics)
 
-climate <- read_csv(here("data", "climate_clean.csv"))
+climate <- read_csv(here("data", "clean_climate.csv"))
 
 # Univariate Analysis
 
