@@ -16,8 +16,8 @@ library(betareg)
 
 
 ```{r}
-states <- read_csv("GOVT020/winter-inst-2021/data/state_raw.csv")
-yale <- read_csv("GOVT020/winter-inst-2021/data/yale_data_raw.csv")
+states <- read_csv("../data/state_raw.csv")
+yale <- read_csv("../data/yale_data_raw.csv")
 head(states)
 head(yale)
 ```
@@ -29,6 +29,7 @@ yale <- yale%>%
 ```
 
 ```{r}
+state_yale <-inner_join(yale, states, by = c("GeoName" = "state"))
 ggplot(data = state_yale)+
   geom_point(aes(x = cp_2019, y = gwvoteimp)) +
   theme_bw()
@@ -36,7 +37,6 @@ ggplot(data = state_yale)+
 
 
 ```{r}
-state_yale <-inner_join(yale, states, by = c("GeoName" = "state"))
 state_yale%>%
   arrange(GeoName)%>%
   mutate(gov_party = as.factor(gov_party))-> state_yale
