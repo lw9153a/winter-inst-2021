@@ -12,16 +12,16 @@ yale%>%
 
 state%>%
   mutate(cp = ifelse(cp_2019 > 0, 1, 0))%>%
-  mutate(perc_white = perc_white * 100)%>%
-  mutate(perc_black = perc_black * 100)%>%
-  mutate(perc_latino = perc_latino * 100)%>%
-  mutate(perc_asian = perc_asian * 100)%>%
-  mutate(perc_renew = perc_renew * 100)%>%
-  mutate(perc_ff = perc_ff * 100)->
+  mutate(perc_white = round(perc_white * 100, digits = 0))%>%
+  mutate(perc_black = round(perc_black * 100, digits = 0))%>%
+  mutate(perc_latino = round(perc_latino * 100, digits = 0))%>%
+  mutate(perc_asian = round(perc_asian * 100, digits = 0))%>%
+  mutate(perc_renew = round(perc_renew * 100, digits = 0))%>%
+  mutate(perc_ff = round(perc_ff * 100, digits = 0))->
   state
 
 climate <- inner_join(state, yale, by = c("state" = "GeoName"))
 
 climate <- inner_join(climate, election, by = c("state" = "state"))
 
-write_csv(x = climate, path = here("data", "clean_climate.csv"))
+write_csv(x = climate, path = here("data", "climate_clean.csv"))
