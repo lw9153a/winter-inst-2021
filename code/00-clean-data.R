@@ -7,7 +7,7 @@ yale <- read_csv(here("data", "yale_data_raw.csv"))
 
 yale%>%
   filter(GeoType == "State")%>%
-  select(GeoName, gwvoteimp) ->
+  select(GeoName, gwvoteimp, human, humanOppose) ->
   yale
 
 state%>%
