@@ -24,4 +24,4 @@ climate <- inner_join(state, yale, by = c("state" = "GeoName"))
 
 climate <- inner_join(climate, election, by = c("state" = "state"))
 
-write_csv(x = climate, path = here("data", "climate_clean.csv"))
+write_csv(x = climate, path = here("data", "clean_climate.csv"))
