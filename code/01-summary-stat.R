@@ -1,12 +1,11 @@
 # Load packages
 library(here)
 library(tidyverse)
-library(PerformanceAnalytics)
 
 # Load in data
 climate <- read_csv(here("data", "clean_climate.csv"))
 
-# Univariate Analysis
+## Univariate Analysis
 
 # Examining GDP variable
 ggplot(climate)+
@@ -37,33 +36,41 @@ ggplot(climate)+
 summary(climate$perc_ff)
 
 
-# Bivariate Analysis
+## Bivariate Analysis
 
+# Filtering out variables not used in our models
+climate%>%
+  select(-c(state, state_abb, gov_party, cp_2019, total_energy, renew, ff, humanOppose, nuclear)) ->
+  climate_num
+
+# Correlation matrix and plot
+cor(climate_num)
+pairs(climate_num[,1:13])
+
+# Carbon price v. gwvoteimp
 ggplot(data = climate) +
   geom_boxplot(aes(x = as.factor(cp), y = gwvoteimp, fill = as.factor(cp)))+
   theme_bw()
 
+# Carbon price v. % fossil fuel
 ggplot(data = climate) +
   geom_boxplot(aes(x = as.factor(cp), y = perc_ff, fill = as.factor(cp)))+
   theme_bw()
 
+# Carbon price v. % renewable 
 ggplot(data = climate) +
   geom_boxplot(aes(x = as.factor(cp), y = perc_renew, fill = as.factor(cp)))+
   theme_bw()
 
+# Carbon price vs. % of state who thinks climate change is caused by humans
 ggplot(data = climate) +
   geom_boxplot(aes(x = as.factor(cp), y = human, fill = as.factor(cp)))+
   theme_bw()
 
+# % of state who thinks climate change is caused by humans vs. gwvoteimp
 ggplot(data = climate) +
   geom_point(aes(x = human, y = gwvoteimp))+
   theme_bw()
 
-climate%>%
-  select(-c(state, state_abb, gov_party, cp_2019, total_energy, renew, ff)) ->
-  climate_num
 
-cor(climate_num)
-
-chart.Correlation(climate_num[,1:10], histogram=TRUE, pch="+")
 
