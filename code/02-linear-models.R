@@ -1,23 +1,24 @@
 library(here)
 library(tidyverse)
 library(Metrics)
+library(car)
 
 climate <- read_csv(here("data", "clean_climate.csv"))
 
 climate_reg <- lm(gwvoteimp ~ cp + gov_party + co2_emissions
-                  + perc_renew + perc_ff, data = climate)
+                  + perc_renew + perc_ff + margin_2016, data = climate)
 summary(climate_reg)
 
 climate_reg2 <- lm(gwvoteimp ~ cp + gov_party + co2_emissions
                    + perc_renew + perc_ff + pop + perc_white 
-                   + perc_black + perc_latino + perc_asian, 
+                   + perc_black + perc_latino + perc_asian + margin_2016, 
                    data = climate)
 summary(climate_reg2)
 
 climate_reg3 <- lm(gwvoteimp ~ human + cp + gov_party 
                    + co2_emissions + perc_renew + perc_ff 
                    + pop + perc_white + perc_black + perc_latino 
-                   + perc_asian, data = climate)
+                   + perc_asian + margin_2016, data = climate)
 summary(climate_reg3)
 
 
