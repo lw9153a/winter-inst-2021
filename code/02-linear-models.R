@@ -1,6 +1,7 @@
 library(here)
 library(tidyverse)
 library(broom)
+library(Metrics)
 
 climate <- read_csv(here("data", "clean_climate.csv"))
 
@@ -34,3 +35,10 @@ selcri<-function(lmout)
 selcri(climate_reg)
 selcri(climate_reg2)
 selcri(climate_reg3)
+
+fitted_reg2 <- climate_reg2$fitted.values
+fitted_reg3 <- climate_reg3$fitted.values
+
+rmse(climate$gwvoteimp, fitted_reg2)
+rmse(climate$gwvoteimp, fitted_reg3)
+
