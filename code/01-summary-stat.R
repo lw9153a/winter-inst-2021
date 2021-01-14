@@ -1,29 +1,35 @@
+# Load packages
 library(here)
 library(tidyverse)
 library(PerformanceAnalytics)
 
+# Load in data
 climate <- read_csv(here("data", "clean_climate.csv"))
 
 # Univariate Analysis
 
+# Examining GDP variable
 ggplot(climate)+
   geom_histogram(aes(x = gdp))+
   theme_bw()
 
 summary(climate$gdp)
 
+# Examining CO2 emissions variable
 ggplot(climate)+
   geom_histogram(aes(x = co2_emissions))+
   theme_bw()
 
 summary(climate$co2_emissions)
 
+# Examining % renewable variable
 ggplot(climate)+
   geom_histogram(aes(x = perc_renew), bins = 15)+
   theme_bw()
 
 summary(climate$perc_renew)
 
+# Examining % fossil fuel variable
 ggplot(climate)+
   geom_histogram(aes(x = perc_ff))+
   theme_bw()
