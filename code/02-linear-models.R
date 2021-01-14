@@ -28,8 +28,7 @@ selcri<-function(lmout)
   adj.rsq <- summary(lmout)$adj.r.sq
   aic <- extractAIC(lmout)[2]
   bic <- extractAIC(lmout, k = log(n))[2]
-  press <- sum((lmout$residuals/(1 - hatvalues(lmout)))^2)
-  cbind(adj.rsq, aic, bic, press)
+  cbind(adj.rsq, aic, bic)
 }
 
 selcri(climate_reg)
@@ -59,6 +58,15 @@ ggplot(data = climate)+
   geom_abline()+
   theme_bw()
 
+vif(climate_reg)
+mean(vif(climate_reg))
+
+vif(climate_reg2)
+mean(vif(climate_reg2))
+
+vif(climate_reg3)
+mean(vif(climate_reg3))
+
 climate_reg4 <- lm(gwvoteimp ~ cp + gov_party + co2_emissions
                    + perc_renew + perc_ff + pop + perc_black 
                    + perc_latino + perc_asian + margin_2016, 
@@ -75,3 +83,27 @@ summary(climate_reg5)
 selcri(climate_reg2)
 selcri(climate_reg4)
 selcri(climate_reg5)
+
+fitted_reg4 <- climate_reg4$fitted.values
+fitted_reg5 <- climate_reg5$fitted.values
+
+rmse(climate$gwvoteimp, fitted_reg2)
+rmse(climate$gwvoteimp, fitted_reg4)
+rmse(climate$gwvoteimp, fitted_reg5)
+
+ggplot(data = climate)+
+  geom_point(aes(x = fitted_reg2, y = gwvoteimp))+
+  geom_abline()+
+  theme_bw()
+
+ggplot(data = climate)+
+  geom_point(aes(x = fitted_reg5, y = gwvoteimp))+
+  geom_abline()+
+  theme_bw()
+
+
+vif(climate_reg2)
+mean(vif(climate_reg2))
+
+vif(climate_reg5)
+mean(vif(climate_reg5))
