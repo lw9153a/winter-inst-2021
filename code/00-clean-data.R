@@ -24,4 +24,8 @@ climate <- inner_join(state, yale, by = c("state" = "GeoName"))
 
 climate <- inner_join(climate, election, by = c("state" = "state"))
 
+climate%>%
+  mutate(gwvoteimp = gwvoteimp/100) ->
+  climate
+
 write_csv(x = climate, path = here("data", "clean_climate.csv"))
