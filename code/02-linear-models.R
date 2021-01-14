@@ -107,3 +107,32 @@ mean(vif(climate_reg2))
 
 vif(climate_reg5)
 mean(vif(climate_reg5))
+
+climate_reg6<- lm(gwvoteimp ~ perc_renew + perc_ff + perc_black 
+                  + perc_latino + perc_asian + margin_2016, 
+                  data = climate)
+summary(climate_reg6)
+
+climate_reg7<- lm(gwvoteimp ~ perc_renew + perc_black 
+                  + perc_latino + perc_asian + margin_2016, 
+                  data = climate)
+summary(climate_reg7)
+
+selcri(climate_reg5)
+selcri(climate_reg6)
+selcri(climate_reg7)
+
+fitted_reg7 <- climate_reg7$fitted.values
+
+rmse(climate$gwvoteimp, fitted_reg5)
+rmse(climate$gwvoteimp, fitted_reg7)
+
+ggplot(data = climate)+
+  geom_point(aes(x = fitted_reg5, y = gwvoteimp))+
+  geom_abline()+
+  theme_bw()
+
+ggplot(data = climate)+
+  geom_point(aes(x = fitted_reg7, y = gwvoteimp))+
+  geom_abline()+
+  theme_bw()
