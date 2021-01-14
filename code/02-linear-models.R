@@ -1,6 +1,5 @@
 library(here)
 library(tidyverse)
-library(broom)
 library(Metrics)
 
 climate <- read_csv(here("data", "clean_climate.csv"))
@@ -42,3 +41,12 @@ fitted_reg3 <- climate_reg3$fitted.values
 rmse(climate$gwvoteimp, fitted_reg2)
 rmse(climate$gwvoteimp, fitted_reg3)
 
+ggplot(data = climate)+
+  geom_point(aes(x = fitted_reg2, y = gwvoteimp))+
+  geom_abline()+
+  theme_bw()
+
+ggplot(data = climate)+
+  geom_point(aes(x = fitted_reg3, y = gwvoteimp))+
+  geom_abline()+
+  theme_bw()
