@@ -28,3 +28,20 @@ selcri<-function(lmout)
 
 selcri(climate_beta)
 selcri(climate_beta2)
+
+fitted_beta <- climate_beta$fitted.values
+fitted_beta2 <- climate_beta2$fitted.values
+
+rmse(climate$gwvoteimp, fitted_beta)
+rmse(climate$gwvoteimp, fitted_beta2)
+
+ggplot(data = climate)+
+  geom_point(aes(x = fitted_beta, y = gwvoteimp))+
+  geom_abline()+
+  theme_bw()
+
+ggplot(data = climate)+
+  geom_point(aes(x = fitted_beta2, y = gwvoteimp))+
+  geom_abline()+
+  theme_bw()
+
