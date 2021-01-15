@@ -1,6 +1,7 @@
 library(here)
 library(tidyverse)
 library(betareg)
+library(car)
 
 climate <- read_csv(here("data", "clean_climate.csv"))
 
