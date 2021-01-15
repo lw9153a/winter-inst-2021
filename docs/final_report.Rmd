@@ -3,7 +3,9 @@ title: Investigation Into the Impact of Carbon Price Policy on Global Warming Le
   Opinions
 author: "Christopher Douglass, London Wagner, and Cam Wejnert-Depue"
 date: "1/15/2021"
-output: html_document
+output:
+  html_document:
+    df_print: paged
 ---
 
 ```{r setup, include = FALSE}
