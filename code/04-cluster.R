@@ -13,5 +13,11 @@ climate %>%
   climate_num
 
 climate_matrix <- as.matrix(climate_num[,-1])
+climate_matrix <- scale(climate_matrix)
 rownames(climate_matrix) <- climate_num$state
 climate_matrix
+
+climate_dist <- dist(climate_matrix, method = "euclidean")
+
+climate_hag <- hclust(climate_dist, method = "complete")
+plot(climate_hag)
