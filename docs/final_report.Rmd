@@ -94,6 +94,7 @@ When initially exploring our data, we noticed a lot of our predictors had high c
 In order to further improve our model, we decided to remove variables that had coefficents close to zero and a high p-value. In other words, we could not reject the null hypothesis that the true value of these coefficents were equal to zero. Most notably, this led our final model to not include the predictor carbon price. As shown in the table below, the coefficent for carbon price was ~0.009 and the p-value was 0.924. We then created a model that removed carbon price as well as other variables with high p-values. 
 
 
+
 ```{r run regression models, include = FALSE}
 climate_reg4 <- lm(gwvoteimp ~ cp + gov_party + co2_emissions
                    + perc_renew + perc_ff + perc_black 
@@ -111,17 +112,21 @@ fitted_beta <- climate_beta$fitted.values
 
 
 
+
 ```{r coef tables for linear models, echo = FALSE, include = TRUE}
 tab_model(climate_reg4, digits = 4, pred.labels = c("Intercept", "Carbon Price", "Governor Party", "CO2 Emissions", "% Renewable Energy", "% Fossil Fuels" ,"% Black", "% Latino", "% Asian", "Population", "2016 Margin"), dv.labels = ("Initial Model. Proportion of State Population Who Want Congress/President to Prioritize Climate Change"))
 ```
 
 
+
 Based on the model selection criteria (AIC, BIC, and adjusted-R2) for both the initial model and the final model without carbon price and other insignificant variables, we decided to use the final model. Both the AIC and the BIC for the final model were lower than the initial model. Additionally, the adjusted-R2 value were higher for the final model. For these reasons, the final model does not include the predictor carbon price.
+
 
 
 ```{r coef tables for final linear models, echo = FALSE, include = TRUE}
 tab_model(climate_reg6, digits = 4, pred.labels = c("Intercept", "% Renewable Energy", "% Black", "% Latino", "% Asian", "Population", "2016 Margin"), dv.labels = ("Final Model. Proportion of State Population Who Want Congress/President to Prioritize Climate Change"))
 ```
+
 
 
 As you can see in the regression table above, the variables that resulted in significance were the margin of vote in the 2016 Presidential Election, percentage of non-white demographic populations, overall state population, and percent of energy accredited as renewable energy. In particular, the coefficients of these variables show that (a) a 1% more increase in positive margin of vote (a 1% increase in vote for Clinton) results in a mean increase of ~.2% in the percentage of a states population that believes that the President and Congress should make global warming legislation a high priority issue, (b) a 1% increase in percentage of renewable energy within a particular state results in an increase of .06% in the percentage of a states population that believes that the President and Congress should make global warming legislation a high priority issue, (c) a 1% increase in percentage of Black demographic in a states population results in an increase of .08% in the percentage of a states population that believes that the President and Congress should make global warming legislation a high priority issue, (d) a 1% increase in percentage of Latinx demographic in a states population results in an increase of .11% in the percentage of a states population that believes that the President and Congress should make global warming legislation a high priority issue, and (e) a 1% increase in percentage of Asian demographic in a states population results in an increase of .13% in the percentage of a states population that believes that the President and Congress should make global warming legislation a high priority issue. Thus, we can conclude that citizens in more democratic or liberal states were more likely to want federal action on climate change, yet having a carbon price does not cause a change in opinion. 
@@ -130,7 +135,7 @@ In conclusion, the results of this model show that whether or not a state has im
 
 ## Beta Regression
 
-A beta regression was also considered when creating our model. The nature of our response variable, opinion on the need for presidential and congressional action on global warming, led us to consider a beta regression. After comparing the actual and predicted values, the RMSE shows us that both models were predicting almost identical values. Since the linear regression is simpler to interpret and does not sacrifice accuracy, it was chosen as our final model over the beta regression. 
+A beta regression was also considered when creating our model. The nature of our response variable, opinion on the need for presidential and congressional action on global warming, led us to consider a beta regression. After comparing the actual and predicted values, the RMSE shows us that both models were predicting almost identical values. This is also exemplified in the plots below. Since the linear regression is simpler to interpret and does not sacrifice accuracy, it was chosen as our final model over the beta regression. 
 
 ```{r actual v predictor for linear and beta, echo = FALSE, include = TRUE}
 ggplot(data = climate)+
@@ -193,6 +198,8 @@ One step we were unable to get to was validation. Due to the small number of obs
 It is important to note that the model does not suggest how voters would react to climate policies outside of a carbon price, such as with regard to subsidies for renewable energy or electric vehicle rebates. We chose to focus on carbon price for this analysis because it is one of the most prominent and potentially effective policies for combating global warming. 
 
 # Conclusion
+
+The final linear regression model is an accurate predictor of the percentage of state populations which believe federal action is necessary on global warming. Carbon Price was not found to be significant meaning that we cannot reject the null hypothesis that the coefficient for Carbon Price is zero. The 2016 election and racial demographics were found to be significant in our final model. Specifically, an increase of  1% in the margin of the 2016 election (1 % more of vote for Clinton) results in a mean increase of ~.2% in our response variable (the need for congressional and presidential action on climate change). Further testing of variables, such as through a lasso test would likely improve variable selection in future models. 
 
 # Bibliography
 “Climate Change and Health.” World Health Organization, World Health Organization, 1 Feb. 2018, 
