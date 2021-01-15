@@ -17,3 +17,4 @@ We used a Carbon Price policy as a divider between states in the U.S.
 Our analysis finds that citizens in more democratic or liberal states were more likely to want federal action on climate change. 
 
 
+Please see our final report and presentation as pdfs in the 'doc' folder.
