@@ -5,6 +5,7 @@ library(car)
 
 climate <- read_csv(here("data", "clean_climate.csv"))
 
+# First model w/out demographics
 climate_reg <- lm(gwvoteimp ~ cp + gov_party + co2_emissions
                   + perc_renew + perc_ff + margin_2016, data = climate)
 summary(climate_reg)
@@ -73,23 +74,13 @@ climate_reg4 <- lm(gwvoteimp ~ cp + gov_party + co2_emissions
                    data = climate)
 summary(climate_reg4)
 
-climate_reg5 <- lm(gwvoteimp ~ cp + gov_party + co2_emissions
-                   + perc_renew + perc_ff + perc_black 
-                   + perc_latino + perc_asian + margin_2016, 
-                   data = climate)
-
-summary(climate_reg5)
-
 selcri(climate_reg2)
 selcri(climate_reg4)
-selcri(climate_reg5)
 
 fitted_reg4 <- climate_reg4$fitted.values
-fitted_reg5 <- climate_reg5$fitted.values
 
 rmse(climate$gwvoteimp, fitted_reg2)
 rmse(climate$gwvoteimp, fitted_reg4)
-rmse(climate$gwvoteimp, fitted_reg5)
 
 ggplot(data = climate)+
   geom_point(aes(x = fitted_reg2, y = gwvoteimp))+
@@ -97,7 +88,7 @@ ggplot(data = climate)+
   theme_bw()
 
 ggplot(data = climate)+
-  geom_point(aes(x = fitted_reg5, y = gwvoteimp))+
+  geom_point(aes(x = fitted_reg4, y = gwvoteimp))+
   geom_abline()+
   theme_bw()
 
@@ -105,34 +96,36 @@ ggplot(data = climate)+
 vif(climate_reg2)
 mean(vif(climate_reg2))
 
-vif(climate_reg5)
-mean(vif(climate_reg5))
+vif(climate_reg4)
+mean(vif(climate_reg4))
 
-climate_reg6<- lm(gwvoteimp ~ perc_renew + perc_ff + perc_black 
+climate_reg5<- lm(gwvoteimp ~ perc_renew + perc_ff + perc_black + pop
+                  + perc_latino + perc_asian + margin_2016, 
+                  data = climate)
+summary(climate_reg5)
+
+climate_reg6<- lm(gwvoteimp ~ perc_renew + perc_black + pop
                   + perc_latino + perc_asian + margin_2016, 
                   data = climate)
 summary(climate_reg6)
 
-climate_reg7<- lm(gwvoteimp ~ perc_renew + perc_black 
-                  + perc_latino + perc_asian + margin_2016, 
-                  data = climate)
-summary(climate_reg7)
-
+selcri(climate_reg4)
 selcri(climate_reg5)
 selcri(climate_reg6)
-selcri(climate_reg7)
 
-fitted_reg7 <- climate_reg7$fitted.values
+fitted_reg5 <- climate_reg5$fitted.values
+fitted_reg6 <- climate_reg6$fitted.values
 
+rmse(climate$gwvoteimp, fitted_reg4)
 rmse(climate$gwvoteimp, fitted_reg5)
-rmse(climate$gwvoteimp, fitted_reg7)
+rmse(climate$gwvoteimp, fitted_reg6)
 
 ggplot(data = climate)+
-  geom_point(aes(x = fitted_reg5, y = gwvoteimp))+
+  geom_point(aes(x = fitted_reg4, y = gwvoteimp))+
   geom_abline()+
   theme_bw()
 
 ggplot(data = climate)+
-  geom_point(aes(x = fitted_reg7, y = gwvoteimp))+
+  geom_point(aes(x = fitted_reg6, y = gwvoteimp))+
   geom_abline()+
   theme_bw()
