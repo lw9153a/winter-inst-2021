@@ -12,4 +12,6 @@ climate %>%
   select(-c(co2_emissions, gdp, pop))->
   climate_num
 
-
+climate_matrix <- as.matrix(climate_num[,-1])
+rownames(climate_matrix) <- climate_num$state
+climate_matrix
