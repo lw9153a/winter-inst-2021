@@ -2,8 +2,9 @@
 
 Investigation into  Carbon Price policy impact on Global Warming Legislation Opinions
             
-            Christopher Douglass, London Wagner, Cam Wejnert-Depue
-                                    1.15.2021
+   Christopher Douglass, London Wagner, Cam Wejnert-Depue
+                          
+   1.15.2021
 
 
 
