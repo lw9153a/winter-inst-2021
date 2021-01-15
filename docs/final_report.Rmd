@@ -1,0 +1,139 @@
+---
+title: Investigation Into the Impact of Carbon Price Policy on Global Warming Legislations
+  Opinions
+author: "Christopher Douglass, London Wagner, and Cam Wejnert-Depue"
+date: "1/15/2021"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r load libraries, include = FALSE}
+library(tidyverse)
+library(here)
+library(betareg)
+library(car)
+library(Metrics)
+```
+
+```{r import data, include = FALSE}
+climate <- read.csv(here("data", "clean_climate.csv"))
+```
+
+# Abstract
+
+This study analyzes whether or not environmental policies may be related to opinions on the need for global warming legislation. In particular, the opinion in question is whether the President and Congress should make global warming legislation a high priority. With this in mind, we used that a Carbon Price policy was a divider between states in the U.S. Our analysis finds that citizens in more democratic or liberal states were more likely to want federal action on climate change, yet having a carbon price does not cause a change in opinion. From a policy perspective, we wonder whether a different environmental policy would have a similar or different impact on our response variable of the percentage of state populations that believe the President and Congress should make global warming legislation a high priority.
+
+# Introduction
+
+According to Judith Lichtenberg, Professor of Philosophy and Law at Georgetown University, since the Industrial Revolution, the focus of global economies shifted towards making Capitalism a dominant form of economy. With this a collective amount of “New Harms” developed. These “New Harms” include pollution, climate change and global warming, unregulated global industrial emissions, and other global-scale struggles. One of the most impactful of these harms is the condition called ‘global warming’ which leads to ‘climate change.’ The Intergovernmental Panel on Climate Change (IPCC) defines global warming as the “estimated increase in global mean surface temperature (GMST) averaged over a 30-year period, or the 30-year period centered on a particular year or decade, expressed relative to pre-industrial levels unless otherwise specified.” In addition, the IPCC defines climate change as “a change in the state of the climate that can be identified (e.g. using statistical tests) by changes in the mean and/or the variability of its properties, and that persists for an extended period.” Globally, impacts of climate change and global warming are expected to cause 250,000 additional deaths per year between 2030 and 2050 due to implications of poor air quality, malnutrition, malaria, and heat stress (WHO 2014). 
+
+With multinational definitions of global warming and climate change established, countries began to individually adopt their own definitions of these concepts as well as strategies to mitigate their negative impacts on society. In the United States, global warming and climate change research and mitigation policies are produced by many governmental administrations including the Environmental Protection Agency (EPA). EPA defines global warming as “recent and ongoing rise in global average temperature near Earth's surface,” and climate change as “any significant change in the measures of climate lasting for an extended period of time.” In the United States in particular, climate change and impacts of global warming could cause a decrease of 1.8% in GDP, according to the National Resources Defense Council (NRDC). 
+
+
+The consequences of global warming are particularly impactful in the United States. Due to differences in climate, population, energy use, and proximity to coastal areas, however, global warming mitigation strategies are not uniform between individual states. The varied range of responses to global warming and climate change can be attributed to these regional differences, as states may see variations in the impacts of climate change and global warming. In order to mitigate the impacts of global warming, future legislators must make this a high priority issue for the near-future. Some states have already begun to take steps towards global warming mitigation, such as introducing various environmental policies including a price per ton of carbon emitted to reduce the amount of contribution toward global warming. As success increases in combating global warming in states that have carbon prices, there is hope that federal government administrations will enact similar policies nationwide. This model will examine the relationship between voter attitudes toward the need for future Congress and the President to act on global warming and states with policies on carbon pricing. The relationship was studied at the state level, measuring the opinions of voters in each state as a percentage. Our hypothesis is that states with a carbon price policy would have on average a higher percentage of its individual population believe that Congress and the President should make global warming a high priority issue.
+
+# Background on Data and Terminology
+
+It should be understood that the terms global warming and climate change will be used interchangeably. The annual Yale Climate survey asks respondents about “global warming,” however as a warming planet is intrinsically linked to a changing climate we will not distinguish between the terms. Additionally, the response variable specifically “global warming should be a high priority for the next president and Congress” is understood to be equal to the need for federal legislation on climate change, because passing legislation and adherence to international agreements are the only way congress and the president work together to enact high priority policies.
+
+Currently twelve states have carbon pricing, however we are looking only at the ten states that had carbon pricing in effect in 2019, the year prior to the Yale climate survey. Nine of the ten states are in the Northeast and part of RGGI (Regional Greenhouse Gas Initiative), which was the first mandatory market-based program in the United States. As such, all of these states operate under the same quarterly auctions for pollution (carbon) credits and have the same average carbon price each year. In 2019 that average price was \$5.43/ ton. California’s carbon pricing system is also a cap and trade program with auctions throughout the year, however California has a higher price floor which led to an average carbon price of $16.84/ton in 2019. Due to the limited number of states that have carbon pricing the variable was converted into a binary (0,1) result to indicate whether or not the state has a carbon price.
+```{r create carbon price map, echo = FALSE, include = TRUE}
+usa <- map_data("state")
+usa$region <- str_to_title(usa$region)
+climate$cp <- ifelse(climate$cp == 0 | climate$cp == "No", "No", "Yes")
+map_climate <- inner_join(usa, climate, by = c("region" = "state"))
+
+ggplot(data = map_climate)+
+      geom_polygon(aes(x = long, y = lat, fill = cp, group = group), color = "white")+
+      coord_fixed(1.3)+
+  theme_bw()+
+  xlab("")+
+  ylab("")+
+  ggtitle(c("Figure 1. States that have a Carbon Price"))+
+  scale_fill_manual(values = c("cyan3", "cyan4"))+
+  labs(fill = "Carbon Price")+
+  guides(fill = guide_legend(reverse = TRUE))
+```
+
+# Data Collection Method
+
+The data and variables used to run our regression models were gathered from several different sources. First, the Yale 2020 Climate Opinion Map, which is based on a climate survey, details information on global warming opinions. From this data set, we used the variables: $gwvoteimp$ to represent the estimated percentage of a state’s population that believes that global warming should be more of a high priority issue for future Congress and the President, $human$ to represent the estimated percentage of a state’s population that believes that global warming is human-caused (anthropogenic).  The variable $gwvoteimp$ was used as the response variable in our models. 
+```{r create prioritize map, echo = FALSE, include = TRUE}
+ggplot(data = map_climate)+
+      geom_polygon(aes(x = long, y = lat, fill = gwvoteimp, group = group), color = "white")+
+      coord_fixed(1.3)+
+  theme_bw()+
+  xlab("")+
+  ylab("")+
+  ggtitle(c("Figure 2. % Prioritize Global Warming"))+
+  scale_fill_gradient(low = "turquoise", high = "deepskyblue4")+
+  labs(fill = "% Prioritize Global Warming")
+```
+
+Second, we used the United States Energy Information Administration’s (EIA) State Energy Data System (SEDS) to get information on net energy generations. With this data, we were able to isolate the variables of $perc_ff$ to represent the average percentage of total energy used in the form of fossil fuel energy, and $perc_renew$ to represent the average percentage of total energy used in the form of renewable energy. In order to convert these total amounts of energy forms used as percentages, we divided each total of renewable energy usage or fossil fuel usage by the total amount of energy used. EIA’s SEDS data is only available up until 2018, and is most relevant for the timeframe as 2019’s carbon price is set in part based on previous year’s energy usage. 
+
+Third, by using data collected by the EPA, we were able to also use the variable $CO2_emisions$ to note average CO2 emissions per state. The CO2 emissions data by state is only available up until 2018, and is most relevant for the timeframe as 2019’s carbon price is set in part based on previous year’s emissions. 
+
+Fourth, we used national census data from 2019 to establish our variables of pop as the total population of each individual state, $perc_white$ to represent the percentage of each state’s population that is white, $perc_latino$ to represent the percentage of each state’s population that is latino, $perc_black$ to represent the percentage of each state’s population that is black, and $perc_asian$ to represent the percentage of each state’s population that is asian. The addition of these variables of demographics is used since evidence has shown certain demographics often suffer disproportionately worse effects from climate change, including low-income urban populations which are primarily Black and Latinx, as well as indigenous communities. Therefore by including these variables, we have accounted for the potential in differing opinions among these different communities.
+
+Finally, we added two variables to introduce an impact of political party affiliation to the analysis. Using the variables $gov_party$ to represent each states’ gubernatorial political party, and $margin_2016$ to determine what percentage of the state voted for a Democratic Presidential Candidate (Hillary Clinton) versus what percentage of the state voted for a Republican Presidential Candidate (Donald Trump) in the most recent Presidential election before 2020. This variable is illustrated as the percentage of the voting population of an individual state that voted for Hillary Clinton subtracted from the percentage of the same states’ voting population that voted for Donald Trump. A negative percentage for this variable represents a higher percentage of votes in that state for Donald Trump, whereas a positive percentage for this variable represents a higher percentage of votes in that state of Hillary Clinton.
+
+# Data Cleaning
+
+Similarly, several steps were taken to clean and organize the data prior to regression modeling. First, variables were all given consistent formatting in csv to match the style of Yale’s climate data. All data was then aggregated into a single dataframe in RStudio. This data frame then included opinion on the need for congressional and presidential climate action, CO2 emissions, gubernatorial party affiliation, 2016 election margin percentage, carbon pricing data from the RGGI and California cap and trade programs, and census data on population and racial demographics. As mentioned above, carbon pricing was changed to a binary variable for the linear regression due to the limited number of states that had carbon pricing in effect in 2019 and lack of variation in costs for the majority of states. Furthermore, a rounding function was used to convert decimal figures to whole numbers. When running the data for cluster effects, our response variable, the percentage of state populations that believe the President and Congress should make global warming legislation a high priority, was divided by 100 to convert to a proportion so a beta regression model could be used.
+
+# Analysis
+
+When initially exploring our data, we noticed a lot of our predictors had high correlation coefficients. Because of this, we knew we needed to be on the lookout for multicollinearity issues. 
+
+## Beta Regression
+
+## Cluster Analysis
+The cluster chart is grouped around the key variables of: (a) carbon price in 2019, percent of state energy that is allotted as renewable, (b) percentage of state energy that is allotted as fossil fuel, (c) percentage of state population that is White demographic, (d) percentage of state population that is non-white (Black, Latino, Asian) demographic, (e) percentage of state population that believes that global warming is human-caused (anthropogenic), the margin of the 2016 Presidential election within each state, overall GDP per capita of each state, and CO2 emissions per capita of each state. 
+
+```{r create cluster model, echo = FALSE, include = TRUE}
+climate %>%
+  select(state, cp_2019, gdp, co2_emissions, perc_renew, perc_ff, pop, perc_white,
+         perc_black, perc_latino, perc_asian, human, margin_2016)%>%
+  mutate(gdp_pc = (gdp*1000000)/pop)%>%
+  mutate(co2_pc = (co2_emissions*1000000)/pop)%>%
+  select(-c(co2_emissions, gdp, pop))->
+  climate_num
+
+# Converting the data frame into a matrix
+climate_matrix <- as.matrix(climate_num[,-1])
+
+# Scaling the data
+climate_matrix <- scale(climate_matrix)
+
+# Adding in the states as row names
+rownames(climate_matrix) <- climate_num$state
+
+# Calculating the distance
+climate_dist <- dist(climate_matrix, method = "euclidean")
+
+# Plotting the cluster diagram
+climate_hag <- hclust(climate_dist, method = "complete")
+plot(climate_hag, main = "State Cluster 2019")
+```
+
+California, D.C., and Hawaii are clustered together due to their similarity in 2016 vote margin, smaller percentage of the population made up of white people, and agreeing that climate change is anthropogenic. Maryland, New York, Massachusetts, and Connecticut are clustered based on similarities of high GDP per capita. On the far left end of the chart West Virginia, Wyoming, and North Dakota are clustered due to their resemblance with regard to CO2 emissions, the 2016 vote margin, and their lack of belief in the anthropogenic nature of climate change. Across all states, 2016 vote margin and opinion on the human cause of climate change appear to have formed these various clusters of states. 
+
+# Limitations
+
+## Data Collection
+
+Our hypothesis focused on the possible effect of 2019 carbon prices on the results of the climate opinion survey conducted in early 2020 by Yale University. Contrary to our original hypothesis, the predictors that ended up in our final model were the 2016 presidential vote and racial demographics. Both of these variables have limitations. The 2016 election was the most recent variable that is standard across all states for political ideology. Since these results are from four years ago they are thus less reliable as an operationalization of 2019 state political ideology. Likewise, the reliability of the response variable, percentage of state populations that believe the President and Congress should make global warming legislation a high priority, is limited since we don’t know whether the Yale University data took into account demographic variability in each state.  
+
+## Models
+One step we were unable to get to was validation. Due to the small number of observations in the data (n = 51), it would be best to use another data set with a similar survey question to validate our model. However, due to time constraints we were not able to perform this step. 
+
+## Analysis
+It is important to note that the model does not suggest how voters would react to climate policies outside of a carbon price, such as with regard to subsidies for renewable energy or electric vehicle rebates. We chose to focus on carbon price for this analysis because it is one of the most prominent and potentially effective policies for combating global warming. 
+
+# Conclusion
+
+# Bibliography
