@@ -4,7 +4,7 @@ library(betareg)
 
 climate <- read_csv(here("data", "clean_climate.csv"))
 
-climate_beta <- betareg(gwvoteimp ~ perc_renew + perc_black 
+climate_beta <- betareg(gwvoteimp ~ perc_renew + perc_black + pop
                         + perc_latino + perc_asian + margin_2016, 
                         data = climate)
 summary(climate_beta)
